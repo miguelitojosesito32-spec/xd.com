@@ -1,4 +1,4 @@
-   <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -192,6 +192,10 @@
                 document.getElementById('menu').style.display = 'none';
                 document.getElementById('pantalla-auth').style.display = 'flex';
                 reproducirSonido(440, 'square', 0.2);
+
+                // Forzar a que el celular abra el teclado de inmediato tras cambiar de pantalla
+                const inputPassword = document.getElementById('input-password');
+                setTimeout(() => { inputPassword.focus(); }, 150);
             });
             
             document.getElementById('btn-verificar').addEventListener('click', verificarClave);
@@ -288,6 +292,9 @@
                     document.getElementById('pantalla-hackeando').style.display = 'flex';
                     reproducirSonido(80, 'sawtooth', 0.6);
                     dispararDescargaImagenTrolleo();
+                } else {
+                    // Si falla pero le quedan intentos, le devolvemos el foco al teclado
+                    document.getElementById('input-password').focus();
                 }
             }
         }
