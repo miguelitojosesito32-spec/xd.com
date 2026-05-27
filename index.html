@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+   <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -92,6 +92,24 @@
         @keyframes shake { 0% { transform: translate(6px, 6px); } 100% { transform: translate(-6px, -6px); } }
         @keyframes invert-colors { 0% { filter: invert(0%); } 50% { filter: invert(100%); } 100% { filter: invert(0%); } }
         @keyframes parpadeo { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
+
+        /* ==================================================
+           7. ADAPTACIÓN PARA CELULARES (RESPONSIVE)
+           ================================================== */
+        @media (max-width: 768px) {
+            .portada-bienvenido { font-size: 1.8rem; }
+            .portada-a { font-size: 1.4rem; margin: 0; }
+            .portada-titulo { font-size: 4.5rem; margin: 10px 0 30px 0; text-shadow: 0 0 20px rgba(255, 42, 42, 0.85); }
+            .contenedor-botones { flex-direction: column; gap: 20px; width: 80%; }
+            .btn-pill { font-size: 1.5rem; padding: 12px 0; width: 100%; text-align: center; }
+            .auth-box { width: 90%; height: auto; padding: 40px 20px; border-radius: 25px; }
+            .auth-input { font-size: 2.5rem; width: 80%; letter-spacing: 5px; }
+            .success-title { font-size: 4rem; }
+            .success-sub { font-size: 1.6rem; }
+            .hack-title { font-size: 3.5rem; }
+            .hack-sub { font-size: 1.4rem; }
+            .pregunta-texto { font-size: 2rem; flex-direction: column; }
+        }
     </style>
 </head>
 <body>
@@ -161,6 +179,16 @@
             document.getElementById('menu').style.display = 'flex';
             
             document.getElementById('btn-si').addEventListener('click', () => {
+                // Activa la pantalla completa usando el clic del usuario
+                const elem = document.documentElement;
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen();
+                } else if (elem.webkitRequestFullscreen) {
+                    elem.webkitRequestFullscreen();
+                } else if (elem.msRequestFullscreen) {
+                    elem.msRequestFullscreen();
+                }
+
                 document.getElementById('menu').style.display = 'none';
                 document.getElementById('pantalla-auth').style.display = 'flex';
                 reproducirSonido(440, 'square', 0.2);
