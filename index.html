@@ -179,7 +179,6 @@
             document.getElementById('menu').style.display = 'flex';
             
             document.getElementById('btn-si').addEventListener('click', () => {
-                // Activa la pantalla completa usando el clic del usuario
                 const elem = document.documentElement;
                 if (elem.requestFullscreen) {
                     elem.requestFullscreen();
@@ -193,8 +192,9 @@
                 document.getElementById('pantalla-auth').style.display = 'flex';
                 reproducirSonido(440, 'square', 0.2);
 
-                // Forzar a que el celular abra el teclado de inmediato tras cambiar de pantalla
+                // La caja empieza completamente vacía y lista para escribir libremente
                 const inputPassword = document.getElementById('input-password');
+                inputPassword.value = ""; 
                 setTimeout(() => { inputPassword.focus(); }, 150);
             });
             
@@ -293,7 +293,6 @@
                     reproducirSonido(80, 'sawtooth', 0.6);
                     dispararDescargaImagenTrolleo();
                 } else {
-                    // Si falla pero le quedan intentos, le devolvemos el foco al teclado
                     document.getElementById('input-password').focus();
                 }
             }
