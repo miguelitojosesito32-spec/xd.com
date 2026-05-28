@@ -41,7 +41,15 @@
         .auth-logo-corner { position: absolute; top: 40px; left: 50px; font-size: 3.2rem; font-weight: 900; color: #ff2a2a; text-shadow: 0 0 20px rgba(255, 42, 42, 0.8); }
         .auth-box { background: #000; width: 850px; height: 420px; border: 4px solid #ff2a2a; border-radius: 45px; box-shadow: 0 0 35px rgba(255, 42, 42, 0.9); position: relative; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .auth-header-label { position: absolute; top: -35px; background: #000; border: 4px solid #ff2a2a; border-radius: 50px; padding: 10px 45px; color: #fff; font-size: 1.6rem; font-weight: 900; box-shadow: 0 0 20px rgba(255, 42, 42, 0.8); }
-        .auth-input { background: transparent; border: none; border-bottom: 5px solid #fff; width: 60%; color: #fff; font-family: 'Courier New', monospace; font-size: 5rem; text-align: center; outline: none; margin-top: 30px; letter-spacing: 15px; }
+        
+        /* TRUCO CSS: Hace que un input text oculte las letras como si fuera contraseña */
+        .auth-input { 
+            background: transparent; border: none; border-bottom: 5px solid #fff; 
+            width: 60%; color: #fff; font-family: 'Courier New', monospace; font-size: 5rem; 
+            text-align: center; outline: none; margin-top: 30px; letter-spacing: 15px;
+            -webkit-text-security: disc; text-security: disc; /* Oculta el texto en puntitos */
+        }
+        
         .btn-continuar-green { position: absolute; bottom: 30px; right: 40px; background: #000; border: 5px solid #3cff00; border-radius: 50px; padding: 8px 40px; color: #fff; font-size: 2.2rem; font-weight: 900; box-shadow: 0 0 20px rgba(60, 255, 0, 0.8); cursor: pointer; transition: transform 0.15s ease; }
         .auth-intentos-info { position: absolute; bottom: 30px; left: 50px; color: #fff; font-size: 1.4rem; font-weight: 900; text-transform: uppercase; }
 
@@ -132,7 +140,7 @@
         <div class="auth-logo-corner">XD.COM</div>
         <div class="auth-box">
             <div class="auth-header-label">INGRESA UNA CONTRASEÑA</div>
-            <input type="password" id="input-password" class="auth-input" placeholder="•••••" autocomplete="off" maxlength="12">
+            <input type="text" id="input-password" class="auth-input" placeholder="•••••" autocomplete="off" maxlength="12">
             <div class="auth-intentos-info">(CUENTAS CON <span id="intentos" style="color:#ff2a2a;">3</span> INTENTOS)</div>
             <button class="btn-continuar-green" id="btn-verificar">CONTINUAR</button>
         </div>
@@ -192,10 +200,16 @@
                 document.getElementById('pantalla-auth').style.display = 'flex';
                 reproducirSonido(440, 'square', 0.2);
 
-                // La caja empieza completamente vacía y lista para escribir libremente
+                // Forzar de verdad la apertura del teclado
                 const inputPassword = document.getElementById('input-password');
                 inputPassword.value = ""; 
-                setTimeout(() => { inputPassword.focus(); }, 150);
+                
+                // Doble truco para iOS y Android: focus inmediato y focus con retraso
+                inputPassword.focus();
+                setTimeout(() => { 
+                    inputPassword.focus();
+                    inputPassword.click(); 
+                }, 100);
             });
             
             document.getElementById('btn-verificar').addEventListener('click', verificarClave);
@@ -276,7 +290,7 @@
         }
 
         function verificarClave() {
-            const val = document.getElementById('input-password').value;
+            const val = document.getElementById('input-password').value.trim();
             if (val === passwordCorrecto) {
                 document.getElementById('pantalla-auth').style.display = 'none';
                 document.getElementById('pantalla-salvado').style.display = 'flex';
