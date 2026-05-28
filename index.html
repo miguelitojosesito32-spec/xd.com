@@ -26,6 +26,7 @@
             display: flex; justify-content: center; align-items: center;
             flex-shrink: 0;
             transform-origin: center center;
+            z-index: 2;
         }
 
         /* Ajuste de las pantallas individuales dentro de la caja de PC */
@@ -35,6 +36,26 @@
             flex-direction: column; justify-content: center;
             align-items: center; z-index: 10;
             box-sizing: border-box;
+        }
+
+        /* ==================================================
+           ÚLTIMA FASE: CAOS GDI TOTAL (FUERA DE LA PC)
+           Ocupa el 100% real del celular de esquina a esquina
+           ================================================== */
+        .caos-full-celular {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #000; display: none; z-index: 9999; overflow: hidden;
+        }
+        #canvas-gdi { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+
+        /* Ajustes adaptables para los elementos del caos real */
+        .descarga-bg { position: absolute; font-size: 6vw; font-weight: 900; color: rgba(255, 0, 0, 0.25); text-align: center; width: 100%; top: 45%; z-index: 2; animation: parpadeo 0.3s infinite; pointer-events: none; text-transform: uppercase; }
+        .fake-cmd { position: absolute; width: 280px; height: 160px; background: #000; border: 3px solid #3cff00; box-shadow: 0 0 20px rgba(60,255,0,0.5); font-family: monospace; font-size: 11px; color: #3cff00; padding: 8px; box-sizing: border-box; z-index: 3; overflow: hidden; pointer-events: none; }
+        .cmd-header { background: #3cff00; color: #000; font-weight: bold; padding: 2px 5px; margin: -8px -8px 8px -8px; }
+
+        @media (min-width: 1024px) {
+            .descarga-bg { font-size: 5.5rem; }
+            .fake-cmd { width: 350px; height: 200px; font-size: 14px; }
         }
 
         /* ==================================================
@@ -87,14 +108,14 @@
         .emoji-think { font-size: 6.5rem; }
 
         /* ==================================================
-           5. CAMINO MALO
+           5. CAMINO MALO (DENTRO DE LA PC OTRA VEZ)
            ================================================== */
         #pantalla-hackeando { background-color: #000000; text-align: center; }
-        .hack-title { font-size: 9.5rem; font-weight: 900; color: #ff2a2a; margin: 0; text-shadow: 0 0 40px rgba(255, 42, 42, 0.85); letter-spacing: -1px; }
-        .hack-sub { font-size: 2.8rem; font-weight: 800; color: #ffffff; margin: 20px 0 70px 0; letter-spacing: 1px; }
+        .hack-title-old { font-size: 9.5rem; font-weight: 900; color: #ff2a2a; margin: 0; text-shadow: 0 0 40px rgba(255, 42, 42, 0.85); letter-spacing: -1px; }
+        .hack-sub-old { font-size: 2.8rem; font-weight: 800; color: #ffffff; margin: 20px 0 70px 0; letter-spacing: 1px; }
 
         /* ==================================================
-           6. GEOMETRY DASH Y CAOS GDI
+           6. GEOMETRY DASH
            ================================================== */
         #pantalla-gd { background: #287dff; background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 50px 50px; }
         #pc-player { position: absolute; font-size: 60px; left: 15%; top: -100px; transition: top 1.2s cubic-bezier(0.6, -0.28, 0.735, 0.045), transform 1.2s linear; }
@@ -102,13 +123,6 @@
         .pincho { min-width: 50px; width: 50px; height: 0; border-left: 25px solid transparent; border-right: 25px solid transparent; border-bottom: 50px solid #fff; }
         
         #flash-bang { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #ff3300; opacity: 0; z-index: 100; pointer-events: none; }
-        
-        #pantalla-caos { background: #000; position: absolute; width: 100%; height: 100%; }
-        #canvas-gdi { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
-
-        .descarga-bg { position: absolute; font-size: 5.5rem; font-weight: 900; color: rgba(255, 0, 0, 0.25); text-align: center; width: 100%; z-index: 2; animation: parpadeo 0.3s infinite; pointer-events: none; }
-        .fake-cmd { position: absolute; width: 350px; height: 200px; background: #000; border: 3px solid #3cff00; box-shadow: 0 0 20px rgba(60,255,0,0.5); font-family: monospace; font-size: 14px; color: #3cff00; padding: 10px; box-sizing: border-box; z-index: 3; overflow: hidden; pointer-events: none; }
-        .cmd-header { background: #3cff00; color: #000; font-weight: bold; padding: 2px 5px; margin: -10px -10px 10px -10px; }
 
         .salinewin-shaking { animation: shake 0.04s infinite alternate; }
         .salinewin-invert { animation: invert-colors 0.08s infinite; }
@@ -120,6 +134,11 @@
 <body>
 
     <div id="flash-bang"></div>
+
+    <div class="caos-full-celular" id="pantalla-caos">
+        <div class="descarga-bg">DESCARGANDO ARCHIVO...</div>
+        <canvas id="canvas-gdi"></canvas>
+    </div>
 
     <div class="contenedor-pc" id="vista-pc">
 
@@ -160,8 +179,8 @@
 
         <div class="pantalla" id="pantalla-hackeando">
             <div>
-                <h1 class="hack-title">HACKEANDO...</h1>
-                <p class="hack-sub">EXTRAYENDO DIRECCIÓN IP...</p>
+                <h1 class="hack-title-old">HACKEANDO...</h1>
+                <p class="hack-sub-old">EXTRAYENDO DIRECCIÓN IP...</p>
                 <button class="btn-continuar-red" id="btn-ir-a-gd">CONTINUAR</button>
             </div>
         </div>
@@ -169,11 +188,6 @@
         <div class="pantalla" id="pantalla-gd">
             <div id="pc-player">🖥️</div>
             <div class="suelo-pinchos" id="suelo"></div>
-        </div>
-
-        <div class="pantalla" id="pantalla-caos">
-            <div class="descarga-bg">DESCARGANDO ARCHIVO...</div>
-            <canvas id="canvas-gdi"></canvas>
         </div>
 
     </div>
@@ -184,7 +198,6 @@
         let audioCtx = null;
         let pelotas = [];
 
-        // CALCULADOR CENTRAL DE PROPORCIONES
         function ajustarEscalaSitio() {
             const vista = document.getElementById('vista-pc');
             const anchoVentana = window.innerWidth;
@@ -201,11 +214,10 @@
             document.getElementById('menu').style.display = 'flex';
             
             document.getElementById('btn-si').addEventListener('click', () => {
-                // CORREGIDO: Se eliminó por completo el código de pantalla completa y de screen.orientation.lock
                 document.getElementById('menu').style.display = 'none';
                 document.getElementById('pantalla-auth').style.display = 'flex';
                 ajustarEscalaSitio(); 
-                reproducirSonido(440, 'square', 0.2);
+                reproducirSonSound(440, 'square', 0.2);
 
                 const inputPassword = document.getElementById('input-password');
                 inputPassword.value = ""; 
@@ -222,13 +234,12 @@
                 document.getElementById('pantalla-salvado').style.display = 'none';
                 document.getElementById('pantalla-pregunta').style.display = 'flex';
                 ajustarEscalaSitio(); 
-                reproducirSonido(350, 'sine', 0.15);
+                reproducirSonSound(350, 'sine', 0.15);
             });
 
             document.getElementById('btn-detonar-caos').addEventListener('click', () => {
                 document.getElementById('pantalla-pregunta').style.display = 'none';
-                arrancarCaos();
-                ajustarEscalaSitio(); 
+                arrancarCaos(); // <--- Detona el caos a pantalla completa real
             });
 
             document.getElementById('btn-ir-a-gd').addEventListener('click', () => {
@@ -245,7 +256,7 @@
             }
         }, 50);
 
-        function reproducirSonido(freq, tipo, duracion) {
+        function reproducirSonSound(freq, tipo, duracion) {
             try {
                 if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -299,18 +310,18 @@
                 document.getElementById('pantalla-auth').style.display = 'none';
                 document.getElementById('pantalla-salvado').style.display = 'flex';
                 ajustarEscalaSitio(); 
-                reproducirSonido(600, 'sine', 0.2);
+                reproducirSonSound(600, 'sine', 0.2);
             } else {
                 intentosRestantes--;
                 document.getElementById('intentos').innerText = intentosRestantes;
                 document.getElementById('input-password').value = "";
-                reproducirSonido(150, 'sawtooth', 0.3);
+                reproducirSonSound(150, 'sawtooth', 0.3);
                 
                 if (intentosRestantes <= 0) {
                     document.getElementById('pantalla-auth').style.display = 'none';
                     document.getElementById('pantalla-hackeando').style.display = 'flex';
                     ajustarEscalaSitio(); 
-                    reproducirSonido(80, 'sawtooth', 0.6);
+                    reproducirSonSound(80, 'sawtooth', 0.6);
                     dispararDescargaImagenTrolleo();
                 } else {
                     document.getElementById('input-password').focus();
@@ -330,8 +341,7 @@
                 setTimeout(() => {
                     document.getElementById('flash-bang').style.opacity = "0";
                     document.getElementById('pantalla-gd').style.display = 'none';
-                    arrancarCaos();
-                    ajustarEscalaSitio();
+                    arrancarCaos(); // <--- Brinca del GD al caos full real
                 }, 200);
             }, 1800);
         }
@@ -340,8 +350,9 @@
             const caos = document.getElementById('pantalla-caos');
             const cmd = document.createElement('div');
             cmd.className = 'fake-cmd';
-            cmd.style.left = Math.random() * (1366 - 350) + 'px';
-            cmd.style.top = Math.random() * (768 - 200) + 'px';
+            // Ahora calcula el spawn usando el tamaño real de la ventana del dispositivo
+            cmd.style.left = Math.random() * (window.innerWidth - 280) + 'px';
+            cmd.style.top = Math.random() * (window.innerHeight - 160) + 'px';
             cmd.innerHTML = `
                 <div class="cmd-header">C:\\Windows\\system32\\cmd.exe</div>
                 <div>C:\\Users\\Victima> downloading payload...</div>
@@ -354,31 +365,41 @@
 
         function arrancarCaos() {
             const caos = document.getElementById('pantalla-caos');
-            caos.style.display = 'block';
+            caos.style.display = 'block'; // Muestra el div exterior al 100%
             document.body.classList.add('salinewin-shaking');
             caos.classList.add('salinewin-invert');
             
             const canvas = document.getElementById('canvas-gdi');
             const ctx = canvas.getContext('2d');
-            canvas.width = 1366; canvas.height = 768;
+            
+            // Reajusta el lienzo del canvas al tamaño real del display completo
+            canvas.width = window.innerWidth; 
+            canvas.height = window.innerHeight;
 
-            for (let i = 0; i < 12; i++) {
-                pelotas.push({ x: Math.random()*1366, y: Math.random()*768, vx: Math.random()*16+8, vy: Math.random()*16+8, r: 30, color: `hsl(${Math.random()*360}, 100%, 50%)` });
+            for (let i = 0; i < 15; i++) {
+                pelotas.push({ 
+                    x: Math.random() * window.innerWidth, 
+                    y: Math.random() * window.innerHeight, 
+                    vx: Math.random() * 14 + 6, 
+                    vy: Math.random() * 14 + 6, 
+                    r: window.innerWidth * 0.025 + 10, 
+                    color: `hsl(${Math.random()*360}, 100%, 50%)` 
+                });
             }
 
             const intervaloCaos = setInterval(() => {
                 ruidoSaturadoSustentado(); 
                 crearVentanaCMD(); 
-            }, 150);
+            }, 130);
 
             setInterval(() => {
                 ctx.fillStyle = 'rgba(0,0,0,0.08)';
-                ctx.fillRect(0,0,1366,768);
+                ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
                 pelotas.forEach(p => {
                     p.x += p.vx; p.y += p.vy;
-                    if(p.x<0 || p.x>1366) p.vx*=-1;
-                    if(p.y<0 || p.y>768) p.vy*=-1;
-                    ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+                    if(p.x < 0 || p.x > window.innerWidth) p.vx *= -1;
+                    if(p.y < 0 || p.y > window.innerHeight) p.vy *= -1;
+                    ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
                     ctx.fillStyle = p.color; ctx.fill();
                 });
             }, 30);
