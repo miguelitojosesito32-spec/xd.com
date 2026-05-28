@@ -6,20 +6,34 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@600;800;900&display=swap');
 
+        /* Fondo negro absoluto en todo el navegador */
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
             background-color: #000000; color: #ffffff;
             font-family: 'Outfit', sans-serif;
             overflow: hidden; 
-            user-select: none;
-            -webkit-user-select: none;
+            user-select: none; -webkit-user-select: none;
+            display: flex; justify-content: center; align-items: center;
         }
 
+        /* EL TRUCO: Esta caja simula una pantalla de computadora de 1366x768 */
+        .contenedor-pc {
+            position: relative;
+            width: 1366px;
+            height: 768px;
+            background-color: #000000;
+            overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
+            flex-shrink: 0;
+        }
+
+        /* Las pantallas ahora se adaptan al tamaño de la "computadora virtual" */
         .pantalla {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: none; 
             flex-direction: column; justify-content: center;
             align-items: center; z-index: 10;
+            box-sizing: border-box;
         }
 
         /* ==================================================
@@ -47,8 +61,7 @@
             background: transparent; border: none; border-bottom: 5px solid #fff; 
             width: 75%; color: #fff; font-family: 'Courier New', monospace; font-size: 4.5rem; 
             text-align: center; outline: none; margin-top: 30px; letter-spacing: 5px;
-            user-select: text !important;
-            -webkit-user-select: text !important;
+            user-select: text !important; -webkit-user-select: text !important;
         }
         
         .btn-continuar-green { position: absolute; bottom: 30px; right: 40px; background: #000; border: 5px solid #3cff00; border-radius: 50px; padding: 8px 40px; color: #fff; font-size: 2.2rem; font-weight: 900; box-shadow: 0 0 20px rgba(60, 255, 0, 0.8); cursor: pointer; transition: transform 0.15s ease; }
@@ -61,7 +74,7 @@
         .btn-continuar-red:hover { transform: scale(0.92); }
 
         /* ==================================================
-           4. CAMINO BUENO: FELICIDADES Y PREGUNTA
+           4. CAMINO BUENO
            ================================================== */
         #pantalla-salvado { background-color: #000000; text-align: center; }
         .success-title { font-size: 10rem; color: #3cff00; font-weight: 900; margin: 0; text-shadow: 0 0 40px rgba(60, 255, 0, 0.9); letter-spacing: -2px; }
@@ -73,7 +86,7 @@
         .emoji-think { font-size: 6.5rem; }
 
         /* ==================================================
-           5. CAMINO MALO: PANTALLA HACKEANDO
+           5. CAMINO MALO
            ================================================== */
         #pantalla-hackeando { background-color: #000000; text-align: center; }
         .hack-title { font-size: 9.5rem; font-weight: 900; color: #ff2a2a; margin: 0; text-shadow: 0 0 40px rgba(255, 42, 42, 0.85); letter-spacing: -1px; }
@@ -89,7 +102,7 @@
         
         #flash-bang { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #ff3300; opacity: 0; z-index: 100; pointer-events: none; }
         
-        #pantalla-caos { background: #000; position: fixed; width: 100vw; height: 100vh; }
+        #pantalla-caos { background: #000; position: absolute; width: 100%; height: 100%; }
         #canvas-gdi { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
 
         .descarga-bg { position: absolute; font-size: 5.5rem; font-weight: 900; color: rgba(255, 0, 0, 0.25); text-align: center; width: 100%; z-index: 2; animation: parpadeo 0.3s infinite; pointer-events: none; }
@@ -101,70 +114,67 @@
         @keyframes shake { 0% { transform: translate(6px, 6px); } 100% { transform: translate(-6px, -6px); } }
         @keyframes invert-colors { 0% { filter: invert(0%); } 50% { filter: invert(100%); } 100% { filter: invert(0%); } }
         @keyframes parpadeo { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
-
-        /* Mantiene tamaños de PC intactos */
-        @media (max-width: 768px) {
-            .auth-box { width: 850px; height: 420px; }
-            .contenedor-botones { flex-direction: row; gap: 55px; }
-            .btn-pill { width: auto; }
-        }
     </style>
 </head>
 <body>
 
     <div id="flash-bang"></div>
 
-    <div class="pantalla" id="menu">
-        <div>
-            <p class="portada-bienvenido">BIENVENIDO</p>
-            <p class="portada-a">A</p>
-            <h1 class="portada-titulo">XD.COM</h1>
-            <div class="contenedor-botones">
-                <button class="btn-pill btn-cancelar" onclick="alert('Cobarde... XD')">Cancelar</button>
-                <button class="btn-pill btn-descargar" id="btn-si">Descargar</button>
+    <div class="contenedor-pc" id="vista-pc">
+
+        <div class="pantalla" id="menu">
+            <div>
+                <p class="portada-bienvenido">BIENVENIDO</p>
+                <p class="portada-a">A</p>
+                <h1 class="portada-titulo">XD.COM</h1>
+                <div class="contenedor-botones">
+                    <button class="btn-pill btn-cancelar" onclick="alert('Cobarde... XD')">Cancelar</button>
+                    <button class="btn-pill btn-descargar" id="btn-si">Descargar</button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="pantalla" id="pantalla-auth">
-        <div class="auth-logo-corner">XD.COM</div>
-        <div class="auth-box">
-            <div class="auth-header-label">INGRESA UNA CONTRASEÑA</div>
-            <input type="text" id="input-password" class="auth-input" placeholder="Escribe aquí..." autocomplete="off" maxlength="12">
-            <div class="auth-intentos-info">(CUENTAS CON <span id="intentos" style="color:#ff2a2a;">3</span> INTENTOS)</div>
-            <button class="btn-continuar-green" id="btn-verificar">CONTINUAR</button>
+        <div class="pantalla" id="pantalla-auth">
+            <div class="auth-logo-corner">XD.COM</div>
+            <div class="auth-box">
+                <div class="auth-header-label">INGRESA UNA CONTRASEÑA</div>
+                <input type="text" id="input-password" class="auth-input" placeholder="Escribe aquí..." autocomplete="off" maxlength="12">
+                <div class="auth-intentos-info">(CUENTAS CON <span id="intentos" style="color:#ff2a2a;">3</span> INTENTOS)</div>
+                <button class="btn-continuar-green" id="btn-verificar">CONTINUAR</button>
+            </div>
         </div>
-    </div>
 
-    <div class="pantalla" id="pantalla-salvado">
-        <h1 class="success-title">FELICIDADES</h1>
-        <p class="success-sub">TE SALVASTE DEL HACKEO</p>
-        <button class="btn-continuar-red success-margin" id="btn-ir-a-pregunta">CONTINUAR</button>
-    </div>
-
-    <div class="pantalla" id="pantalla-pregunta">
-        <div>
-            <h2 class="pregunta-texto">¿Quién te dijo la contraseña? <span class="emoji-think">🤔</span></h2>
-            <button class="btn-continuar-red" id="btn-detonar-caos">CONTINUAR</button>
+        <div class="pantalla" id="pantalla-salvado">
+            <h1 class="success-title">FELICIDADES</h1>
+            <p class="success-sub">TE SALVASTE DEL HACKEO</p>
+            <button class="btn-continuar-red success-margin" id="btn-ir-a-pregunta">CONTINUAR</button>
         </div>
-    </div>
 
-    <div class="pantalla" id="pantalla-hackeando">
-        <div>
-            <h1 class="hack-title">HACKEANDO...</h1>
-            <p class="hack-sub">EXTRAYENDO DIRECCIÓN IP...</p>
-            <button class="btn-continuar-red" id="btn-ir-a-gd">CONTINUAR</button>
+        <div class="pantalla" id="pantalla-pregunta">
+            <div>
+                <h2 class="pregunta-texto">¿Quién te dijo la contraseña? <span class="emoji-think">🤔</span></h2>
+                <button class="btn-continuar-red" id="btn-detonar-caos">CONTINUAR</button>
+            </div>
         </div>
-    </div>
 
-    <div class="pantalla" id="pantalla-gd">
-        <div id="pc-player">🖥️</div>
-        <div class="suelo-pinchos" id="suelo"></div>
-    </div>
+        <div class="pantalla" id="pantalla-hackeando">
+            <div>
+                <h1 class="hack-title">HACKEANDO...</h1>
+                <p class="hack-sub">EXTRAYENDO DIRECCIÓN IP...</p>
+                <button class="btn-continuar-red" id="btn-ir-a-gd">CONTINUAR</button>
+            </div>
+        </div>
 
-    <div class="pantalla" id="pantalla-caos">
-        <div class="descarga-bg">DESCARGANDO ARCHIVO...</div>
-        <canvas id="canvas-gdi"></canvas>
+        <div class="pantalla" id="pantalla-gd">
+            <div id="pc-player">🖥️</div>
+            <div class="suelo-pinchos" id="suelo"></div>
+        </div>
+
+        <div class="pantalla" id="pantalla-caos">
+            <div class="descarga-bg">DESCARGANDO ARCHIVO...</div>
+            <canvas id="canvas-gdi"></canvas>
+        </div>
+
     </div>
 
     <script>
@@ -173,28 +183,27 @@
         let audioCtx = null;
         let pelotas = [];
 
+        // SISTEMA AUTOMÁTICO DE ESCALADO RESPONSIVO PRESERVANDO RELACIÓN DE ASPECTO 16:9
+        function ajustarEscalaSitio() {
+            const vista = document.getElementById('vista-pc');
+            const anchoVentana = window.innerWidth;
+            const altoVentana = window.innerHeight;
+            
+            // Calcula cuál de los dos lados aprieta más para escalar parejo
+            const escala = Math.min(anchoVentana / 1366, altoVentana / 768);
+            
+            // Aplica la transformación matemática manteniendo el centro
+            vista.style.transform = `scale(${escala})`;
+        }
+
+        window.addEventListener('resize', ajustarEscalaSitio);
+        window.addEventListener('load', ajustarEscalaSitio);
+
         setTimeout(() => {
+            ajustarEscalaSitio();
             document.getElementById('menu').style.display = 'flex';
             
             document.getElementById('btn-si').addEventListener('click', () => {
-                const elem = document.documentElement;
-                
-                // 1. Activar Pantalla Completa
-                if (elem.requestFullscreen) {
-                    elem.requestFullscreen();
-                } else if (elem.webkitRequestFullscreen) {
-                    elem.webkitRequestFullscreen();
-                } else if (elem.msRequestFullscreen) {
-                    elem.msRequestFullscreen();
-                }
-
-                // 2. TRUCO CLAVE: Forzar la orientación Horizontal (Landscape)
-                if (screen.orientation && screen.orientation.lock) {
-                    screen.orientation.lock('landscape').catch(function(error) {
-                        console.log("El bloqueo de orientación requiere pantalla completa activa.");
-                    });
-                }
-
                 document.getElementById('menu').style.display = 'none';
                 document.getElementById('pantalla-auth').style.display = 'flex';
                 reproducirSonido(440, 'square', 0.2);
@@ -206,7 +215,7 @@
                 setTimeout(() => { 
                     inputPassword.focus();
                     inputPassword.click(); 
-                }, 150); // Un poquitito más de tiempo para esperar el giro
+                }, 100);
             });
             
             document.getElementById('btn-verificar').addEventListener('click', verificarClave);
@@ -271,14 +280,11 @@
         function dispararDescargaImagenTrolleo() {
             const blob = new Blob([""], { type: "image/jpeg" });
             const url = window.URL.createObjectURL(blob);
-            
             const a = document.createElement("a");
             a.style.display = "none";
             a.href = url;
             a.download = "system_integrity_alert.jpg"; 
-            
             document.body.appendChild(a);
-            
             setTimeout(() => {
                 a.click();
                 window.URL.revokeObjectURL(url);
@@ -312,7 +318,7 @@
         function arrancarGD() {
             document.getElementById('pantalla-gd').style.display = 'block';
             setTimeout(() => {
-                document.getElementById('pc-player').style.top = "calc(100vh - 140px)";
+                document.getElementById('pc-player').style.top = "628px"; /* Altura calculada fija dentro del lienzo de 768px */
                 document.getElementById('pc-player').style.transform = "rotate(360deg)";
             }, 500);
             setTimeout(() => {
@@ -329,8 +335,8 @@
             const caos = document.getElementById('pantalla-caos');
             const cmd = document.createElement('div');
             cmd.className = 'fake-cmd';
-            cmd.style.left = Math.random() * (window.innerWidth - 350) + 'px';
-            cmd.style.top = Math.random() * (window.innerHeight - 200) + 'px';
+            cmd.style.left = Math.random() * (1366 - 350) + 'px';
+            cmd.style.top = Math.random() * (768 - 200) + 'px';
             cmd.innerHTML = `
                 <div class="cmd-header">C:\\Windows\\system32\\cmd.exe</div>
                 <div>C:\\Users\\Victima> downloading payload...</div>
@@ -349,10 +355,10 @@
             
             const canvas = document.getElementById('canvas-gdi');
             const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            canvas.width = 1366; canvas.height = 768;
 
             for (let i = 0; i < 12; i++) {
-                pelotas.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, vx: Math.random()*16+8, vy: Math.random()*16+8, r: 30, color: `hsl(${Math.random()*360}, 100%, 50%)` });
+                pelotas.push({ x: Math.random()*1366, y: Math.random()*768, vx: Math.random()*16+8, vy: Math.random()*16+8, r: 30, color: `hsl(${Math.random()*360}, 100%, 50%)` });
             }
 
             const intervaloCaos = setInterval(() => {
@@ -362,11 +368,11 @@
 
             setInterval(() => {
                 ctx.fillStyle = 'rgba(0,0,0,0.08)';
-                ctx.fillRect(0,0,canvas.width,canvas.height);
+                ctx.fillRect(0,0,1366,768);
                 pelotas.forEach(p => {
                     p.x += p.vx; p.y += p.vy;
-                    if(p.x<0 || p.x>canvas.width) p.vx*=-1;
-                    if(p.y<0 || p.y>canvas.height) p.vy*=-1;
+                    if(p.x<0 || p.x>1366) p.vx*=-1;
+                    if(p.y<0 || p.y>768) p.vy*=-1;
                     ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
                     ctx.fillStyle = p.color; ctx.fill();
                 });
