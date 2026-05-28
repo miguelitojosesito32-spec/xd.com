@@ -6,7 +6,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@600;800;900&display=swap');
 
-        /* Fondo negro absoluto en todo el navegador */
+        /* Fondo negro absoluto en el navegador */
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
             background-color: #000000; color: #ffffff;
@@ -16,7 +16,7 @@
             display: flex; justify-content: center; align-items: center;
         }
 
-        /* EL TRUCO: Esta caja simula una pantalla de computadora de 1366x768 */
+        /* Caja contenedora maestra (Monitor virtual 16:9 fijo) */
         .contenedor-pc {
             position: relative;
             width: 1366px;
@@ -25,9 +25,10 @@
             overflow: hidden;
             display: flex; justify-content: center; align-items: center;
             flex-shrink: 0;
+            transform-origin: center center;
         }
 
-        /* Las pantallas ahora se adaptan al tamaño de la "computadora virtual" */
+        /* Ajuste de las pantallas individuales dentro de la caja de PC */
         .pantalla {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: none; 
@@ -183,16 +184,12 @@
         let audioCtx = null;
         let pelotas = [];
 
-        // SISTEMA AUTOMÁTICO DE ESCALADO RESPONSIVO PRESERVANDO RELACIÓN DE ASPECTO 16:9
+        // CALCULADOR CENTRAL DE PROPORCIONES
         function ajustarEscalaSitio() {
             const vista = document.getElementById('vista-pc');
             const anchoVentana = window.innerWidth;
             const altoVentana = window.innerHeight;
-            
-            // Calcula cuál de los dos lados aprieta más para escalar parejo
             const escala = Math.min(anchoVentana / 1366, altoVentana / 768);
-            
-            // Aplica la transformación matemática manteniendo el centro
             vista.style.transform = `scale(${escala})`;
         }
 
@@ -204,13 +201,14 @@
             document.getElementById('menu').style.display = 'flex';
             
             document.getElementById('btn-si').addEventListener('click', () => {
+                // CORREGIDO: Se eliminó por completo el código de pantalla completa y de screen.orientation.lock
                 document.getElementById('menu').style.display = 'none';
                 document.getElementById('pantalla-auth').style.display = 'flex';
+                ajustarEscalaSitio(); 
                 reproducirSonido(440, 'square', 0.2);
 
                 const inputPassword = document.getElementById('input-password');
                 inputPassword.value = ""; 
-                
                 inputPassword.focus();
                 setTimeout(() => { 
                     inputPassword.focus();
@@ -223,17 +221,20 @@
             document.getElementById('btn-ir-a-pregunta').addEventListener('click', () => {
                 document.getElementById('pantalla-salvado').style.display = 'none';
                 document.getElementById('pantalla-pregunta').style.display = 'flex';
+                ajustarEscalaSitio(); 
                 reproducirSonido(350, 'sine', 0.15);
             });
 
             document.getElementById('btn-detonar-caos').addEventListener('click', () => {
                 document.getElementById('pantalla-pregunta').style.display = 'none';
                 arrancarCaos();
+                ajustarEscalaSitio(); 
             });
 
             document.getElementById('btn-ir-a-gd').addEventListener('click', () => {
                 document.getElementById('pantalla-hackeando').style.display = 'none';
                 arrancarGD();
+                ajustarEscalaSitio(); 
             });
             
             const suelo = document.getElementById('suelo');
@@ -297,6 +298,7 @@
             if (val === passwordCorrecto) {
                 document.getElementById('pantalla-auth').style.display = 'none';
                 document.getElementById('pantalla-salvado').style.display = 'flex';
+                ajustarEscalaSitio(); 
                 reproducirSonido(600, 'sine', 0.2);
             } else {
                 intentosRestantes--;
@@ -307,6 +309,7 @@
                 if (intentosRestantes <= 0) {
                     document.getElementById('pantalla-auth').style.display = 'none';
                     document.getElementById('pantalla-hackeando').style.display = 'flex';
+                    ajustarEscalaSitio(); 
                     reproducirSonido(80, 'sawtooth', 0.6);
                     dispararDescargaImagenTrolleo();
                 } else {
@@ -317,8 +320,9 @@
 
         function arrancarGD() {
             document.getElementById('pantalla-gd').style.display = 'block';
+            ajustarEscalaSitio();
             setTimeout(() => {
-                document.getElementById('pc-player').style.top = "628px"; /* Altura calculada fija dentro del lienzo de 768px */
+                document.getElementById('pc-player').style.top = "628px"; 
                 document.getElementById('pc-player').style.transform = "rotate(360deg)";
             }, 500);
             setTimeout(() => {
@@ -327,6 +331,7 @@
                     document.getElementById('flash-bang').style.opacity = "0";
                     document.getElementById('pantalla-gd').style.display = 'none';
                     arrancarCaos();
+                    ajustarEscalaSitio();
                 }, 200);
             }, 1800);
         }
