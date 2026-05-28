@@ -108,11 +108,11 @@
         .emoji-think { font-size: 6.5rem; }
 
         /* ==================================================
-           5. CAMINO MALO (DENTRO DE LA PC OTRA VEZ)
+           5. CAMINO MALO (DENTRO DE LA PC)
            ================================================== */
         #pantalla-hackeando { background-color: #000000; text-align: center; }
-        .hack-title-old { font-size: 9.5rem; font-weight: 900; color: #ff2a2a; margin: 0; text-shadow: 0 0 40px rgba(255, 42, 42, 0.85); letter-spacing: -1px; }
-        .hack-sub-old { font-size: 2.8rem; font-weight: 800; color: #ffffff; margin: 20px 0 70px 0; letter-spacing: 1px; }
+        .hack-title { font-size: 9.5rem; font-weight: 900; color: #ff2a2a; margin: 0; text-shadow: 0 0 40px rgba(255, 42, 42, 0.85); letter-spacing: -1px; }
+        .hack-sub { font-size: 2.8rem; font-weight: 800; color: #ffffff; margin: 20px 0 70px 0; letter-spacing: 1px; }
 
         /* ==================================================
            6. GEOMETRY DASH
@@ -179,8 +179,8 @@
 
         <div class="pantalla" id="pantalla-hackeando">
             <div>
-                <h1 class="hack-title-old">HACKEANDO...</h1>
-                <p class="hack-sub-old">EXTRAYENDO DIRECCIÓN IP...</p>
+                <h1 class="hack-title">HACKEANDO...</h1>
+                <p class="hack-sub">EXTRAYENDO DIRECCIÓN IP...</p>
                 <button class="btn-continuar-red" id="btn-ir-a-gd">CONTINUAR</button>
             </div>
         </div>
@@ -239,7 +239,9 @@
 
             document.getElementById('btn-detonar-caos').addEventListener('click', () => {
                 document.getElementById('pantalla-pregunta').style.display = 'none';
-                arrancarCaos(); // <--- Detona el caos a pantalla completa real
+                // Ocultamos el contenedor maestro para limpiar los bordes antes de iniciar el caos real
+                document.getElementById('vista-pc').style.display = 'none'; 
+                arrancarCaos(); 
             });
 
             document.getElementById('btn-ir-a-gd').addEventListener('click', () => {
@@ -341,7 +343,8 @@
                 setTimeout(() => {
                     document.getElementById('flash-bang').style.opacity = "0";
                     document.getElementById('pantalla-gd').style.display = 'none';
-                    arrancarCaos(); // <--- Brinca del GD al caos full real
+                    document.getElementById('vista-pc').style.display = 'none'; // Quitamos caja antes de reventar el Caos
+                    arrancarCaos(); 
                 }, 200);
             }, 1800);
         }
@@ -350,7 +353,7 @@
             const caos = document.getElementById('pantalla-caos');
             const cmd = document.createElement('div');
             cmd.className = 'fake-cmd';
-            // Ahora calcula el spawn usando el tamaño real de la ventana del dispositivo
+            // Spawnea dinámicamente según la anchura/altura del teléfono real
             cmd.style.left = Math.random() * (window.innerWidth - 280) + 'px';
             cmd.style.top = Math.random() * (window.innerHeight - 160) + 'px';
             cmd.innerHTML = `
@@ -365,14 +368,14 @@
 
         function arrancarCaos() {
             const caos = document.getElementById('pantalla-caos');
-            caos.style.display = 'block'; // Muestra el div exterior al 100%
+            caos.style.display = 'block'; 
             document.body.classList.add('salinewin-shaking');
             caos.classList.add('salinewin-invert');
             
             const canvas = document.getElementById('canvas-gdi');
             const ctx = canvas.getContext('2d');
             
-            // Reajusta el lienzo del canvas al tamaño real del display completo
+            // Asigna la resolución real del navegador del móvil al canvas
             canvas.width = window.innerWidth; 
             canvas.height = window.innerHeight;
 
